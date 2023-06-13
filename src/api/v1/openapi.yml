@@ -1,0 +1,129 @@
+openapi: 3.1.0
+info:
+  title: Mail Service API
+  version: 1.1.0
+servers:
+  - url: http://localhost:7765/api/v1
+    description: Development
+  - url: http://localhost:17765/api/v1
+    description: Test
+tags:
+  - name: Contacts
+paths:
+  /contacts:
+    post:
+      summary: Create contact
+      operationId: createContact
+      description: Creates or updates a contact and returns respectively `201` or `204` on success.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/ContactEmail"
+                countryCode:
+                  $ref: "#/components/schemas/ContactCountryCode"
+                languageCode:
+                  $ref: "#/components/schemas/ContactLanguageCode"
+                lastActiveAt:
+                  $ref: "#/components/schemas/ContactLastActiveAt"
+              required:
+                - email
+      responses:
+        "201":
+          description: Created
+          requestBody:
+            content:
+              "application/json":
+                schema:
+                  type: object
+                  properties:
+                    contactID:
+                      $ref: "#/components/schemas/ContactID"
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Server Error
+      tags:
+        - Contacts
+  /contacts/{contactID}:
+    parameters:
+      - in: path
+        name: contactID
+        required: true
+        schema:
+          $ref: "#/components/schemas/ContactID"
+    patch:
+      summary: Update contact
+      operationId: updateContact
+      description: Updates a contact.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/ContactEmail"
+                countryCode:
+                  $ref: "#/components/schemas/ContactCountryCode"
+                languageCode:
+                  $ref: "#/components/schemas/ContactLanguageCode"
+                lastActiveAt:
+                  $ref: "#/components/schemas/ContactLastActiveAt"
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Server Error
+      tags:
+        - Contacts
+    delete:
+      summary: Delete contact
+      operationId: deleteContact
+      description: Deletes a contact.
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Server Error
+      tags:
+        - Contacts
+components:
+  schemas:
+    ContactID:
+      type: string
+      title: Contact ID
+      example: dev@hediatest.com
+    ContactEmail:
+      type: string
+      pattern: "[^@]+@[^@]+"
+      example: dev@hediatest.com
+    ContactCountryCode:
+      type: string
+      example: DK
+    ContactLanguageCode:
+      type: string
+      example: da
+    ContactLastActiveAt:
+      type: string
+      format: date
+      example: "2023-04-14"
